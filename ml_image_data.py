@@ -5,6 +5,9 @@ from io import BytesIO
 import pandas as pd
 import matplotlib.image as mpimg
 from concurrent.futures import ThreadPoolExecutor
+import os
+from PIL import Image
+import numpy as np
 
 MYSQL_CONFIG = {
     "host": "43.203.182.106",
@@ -37,7 +40,7 @@ def BALENCIAGA():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'BALENCIAGA'"
-        "group by g.idx"
+        "group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -47,7 +50,7 @@ def BOTTEGAVENETA():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'BOTTEGA VENETA'"
-        "group by g.idx LIMIT 5437"
+        "group by g.idx  LIMIT 10" #5437
     )
     return sql
 
@@ -57,7 +60,7 @@ def BURBERRY():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'BURBERRY'"
-        "group by g.idx"
+        "group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -66,7 +69,7 @@ def CELINE():
         "SELECT gi.idx, g.brand_name, gi.image_url "
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
-        "AND g.brand_name = 'CELINE'"
+        "AND g.brand_name = 'CELINE' LIMIT 10 "
     )
     return sql
 
@@ -75,7 +78,7 @@ def Citizen():
         "SELECT gi.idx, g.brand_name, gi.image_url "
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
-        "AND g.brand_name = 'Citizen'"
+        "AND g.brand_name = 'Citizen' LIMIT 10 "
     )
     return sql
 
@@ -95,7 +98,7 @@ def DIOR():
         "JOIN goods g ON gi.goods_idx = g.idx "
         "WHERE g.brand_name = 'DIOR') "
         "SELECT idx, brand_name, image_url, g_idx "
-        "FROM RankedImages WHERE row_num <= 2;"
+        "FROM RankedImages WHERE row_num <= 2 LIMIT 10 ;"
     )
     return sql
 
@@ -104,7 +107,7 @@ def Fendi():
         "SELECT gi.idx, g.brand_name, gi.image_url "
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
-        "AND g.brand_name = 'Fendi'"
+        "AND g.brand_name = 'Fendi' LIMIT 10 "
     )
     return sql
 
@@ -118,7 +121,7 @@ def GUCCI():
         "146166, 146117, 146116, 146115, 146114, 146113, 146112, 146111, 146110, 146109, 146108, "
         "146036, 145995, 145942, 145941, 145940, 145939, 145932, 145931, 145930, 145902, 145800, 145434, "
         "145328, 145327, 145326, 145325, 145324, 145323, 145316, 145198, 17875, 17774, 17748, 17549, 17506)"
-        "group by g.idx"
+        "group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -132,7 +135,7 @@ def Hamilton():
         "18093, 18090, 18087, 18084, 18081, 18059, 18056, 18053, 18050, 18047, 18043, 18042, "
         "18039, 18038, 18035, 18032, 18029, 18026, 18022, 18021, 18018, 18017, 18014, 18011, "
         "18008, 18004, 17988, 17987, 17984, 17983, 17980, 17977, 17974, 17937, 17936, 17970, 17933, "
-        "17932, 17929, 17926, 17923, 17919, 17903, 17855, 17899, 17851, 17798)"
+        "17932, 17929, 17926, 17923, 17919, 17903, 17855, 17899, 17851, 17798) LIMIT 10 "
     )
     return sql
 
@@ -143,7 +146,7 @@ def HERMES():
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'HERMES' and gi.idx "
         "in(39606, 39612, 39615, 39618, 39623, 39624, 39627, 39642, 39687, "
-        "39688, 39962, 40014, 40035, 40047, 40065, 40196, 40254, 40450, 40452, 40459, 40458)"
+        "39688, 39962, 40014, 40035, 40047, 40065, 40196, 40254, 40450, 40452, 40459, 40458) LIMIT 10 "
     )
     return sql
 
@@ -153,7 +156,7 @@ def Longines():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'Longines' and gi.idx "
-        "not in(55969, 55971, 55980, 55982, 55988, 56008, 56011, 56064, 56078, 56082, 56086, 56090, 56098, 56118, 56129, 62463)"
+        "not in(55969, 55971, 55980, 55982, 55988, 56008, 56011, 56064, 56078, 56082, 56086, 56090, 56098, 56118, 56129, 62463) LIMIT 10 "
     )
     return sql
 
@@ -165,7 +168,7 @@ def LouisVuitton():
         "AND g.brand_name = 'Louis Vuitton' "
         "and gi.idx not in(39498, 39497, 38912, 38523, 38522, 38511, 38510, 38508, 38501, 38495, 38398, 37879, "
         "34750, 34749, 34685, 34684, 34652, 34651, 32759, 32758, 32323, 32322, 32318, 32317, 31304, "
-        "31303, 30866, 30865, 30846, 30806, 30461, 30460, 29936) group by g.idx "
+        "31303, 30866, 30865, 30846, 30806, 30461, 30460, 29936) group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -175,7 +178,7 @@ def MAISON246():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'MAISON246'"
-        "group by g.idx "
+        "group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -184,7 +187,7 @@ def MichaelKors():
         "SELECT gi.idx, g.brand_name, gi.image_url "
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
-        "AND g.brand_name = 'Michael Kors'"
+        "AND g.brand_name = 'Michael Kors' LIMIT 10 "
     )
     return sql
 
@@ -193,7 +196,7 @@ def MONCLER():
         "SELECT gi.idx, g.brand_name, gi.image_url "
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
-        "AND g.brand_name = 'MONCLER'"
+        "AND g.brand_name = 'MONCLER' LIMIT 10 "
     )
     return sql
 
@@ -204,7 +207,7 @@ def Rolex():
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'Rolex' "
         "and gi.idx in (148263, 142867, 148271, 148275, 148279, 148283, 148416, "
-        "148420, 148424, 148452, 148456, 148460, 148464, 148468, 148472)"
+        "148420, 148424, 148452, 148456, 148460, 148464, 148468, 148472) LIMIT 10 "
     )
     return sql
 
@@ -218,7 +221,7 @@ def ROMANSON():
         "18584, 18594, 18595, 18596, 18597, 18598, 18599, 18600, 18601, 18602, 18603, 18604, 18605, 18623, 18624,"
         "18625, 18626, 18627, 18628, 18629, 18630, 18631, 18632, 18633, 18634, 18676, 18677, 18678, 18697, 18698, "
         "18699, 18724, 18725, 18726, 18915, 18916, 18917, 18942, 18943, 18944, 18980, 18981, 18982, 19003, 19004, 19005, "
-        "19033, 19034, 19035) group by g.idx"
+        "19033, 19034, 19035) group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -236,7 +239,7 @@ def THOMBROWNE():
         "2740, 2743, 2752, 2759, 2766, 2773, 2779, 2782, 2790, 2798, 2806, 2812, 2814, 2819, 2822, 2827, 2831, 2840, 2848, "
         "2856, 2865, 2873, 2876, 2880, 2885, 2889, 2894, 2899, 2908, 2918, 2921, 2925, 2929, 2938, 2947, 2956, 2961, "
         "2963, 2971, 2975, 2976, 2977, 2978, 2981, 2989, 2995, 2998, 3003, 3004, 3005, 3006, 3009, 3014, 3018, 3026, "
-        "3036, 3040, 3041, 3042)"
+        "3036, 3040, 3041, 3042) LIMIT 10 "
     )
     return sql
 
@@ -249,7 +252,7 @@ def SALVATOREFERRAGAMO():
         "JOIN goods g ON gi.goods_idx = g.idx "
         "WHERE g.brand_name = 'SALVATORE FERRAGAMO ') "
         "SELECT idx, brand_name, image_url, g_idx "
-        "FROM RankedImages WHERE row_num <= 2;"
+        "FROM RankedImages WHERE row_num <= 2 LIMIT 10 ; "
     )
     # sql = (
     #     "SELECT gi.idx, g.brand_name, gi.image_url "
@@ -268,7 +271,7 @@ def PRADA():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'PRADA' "
-        "group by g.idx "
+        "group by g.idx LIMIT 10 "
     )
     return sql
 
@@ -279,7 +282,7 @@ def Chanel1():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "AND g.brand_name = 'Chanel' "
-        "and gi.idx not in(41139, 41138, 41137, 41100, 41074, 41050, 41002, 40987, 40955, 40917, 40895, 40929, 40928, 40894, 40893, 40869, 40861, 40836, 40756, 40755, 40496);"
+        "and gi.idx not in(41139, 41138, 41137, 41100, 41074, 41050, 41002, 40987, 40955, 40917, 40895, 40929, 40928, 40894, 40893, 40869, 40861, 40836, 40756, 40755, 40496) ;"
     )
     return sql
 
@@ -289,7 +292,7 @@ def Chanel2():
         "FROM goods_image gi, goods g "
         "WHERE gi.goods_idx = g.idx "
         "and g.brand_name = '샤넬' AND gi.idx NOT BETWEEN 23244 AND 34514 "
-        "and gi.idx not in(16406, 16420, 16423, 16435, 16442, 16449, 16459, 16465, 16471, 16524) group by g.idx LIMIT 800"
+        "and gi.idx not in(16406, 16420, 16423, 16435, 16442, 16449, 16459, 16465, 16471, 16524) group by g.idx LIMIT 10"
     )
     return sql
 
@@ -297,30 +300,30 @@ def mysql():
     connection = connect_to_mysql()
     try:
         with connection.cursor() as cursor:
-            # 여러 SQL 쿼리를 호출하여 결과 합치기
+            
             sql_queries = [
                 BALENCIAGA(),
                 BOTTEGAVENETA(),
                 BURBERRY(),
                 CELINE(),
-                Citizen(),
                 DIOR(),
-                Fendi(),
                 GUCCI(),
-                Hamilton(), 
                 HERMES(), 
-                Longines(), 
                 LouisVuitton(), 
-                MAISON246(), 
-                MichaelKors(), 
                 MONCLER(), 
-                Rolex(), 
-                ROMANSON(), 
                 THOMBROWNE(), 
                 SALVATOREFERRAGAMO(), 
                 PRADA(), 
                 Chanel1(),
-                Chanel2()
+                Chanel2(),
+                # Citizen(),
+                # ROMANSON(), 
+                # Rolex(), 
+                # MAISON246(), 
+                # Hamilton(), 
+                # Fendi(),
+                # Longines(), 
+                # MichaelKors(), 
             ]
             
             # 모든 쿼리 결과를 합침
@@ -331,7 +334,9 @@ def mysql():
                 all_targets.extend(targets)  # 쿼리 결과를 all_targets에 추가
 
             print(f"Total targets: {len(all_targets)}")
-            image_all_data = url_image_data(all_targets)
+            #image_all_data = url_image_data(all_targets)
+            
+            image_all_data = url_image_data_with_local(all_targets)
         
     finally:
         connection.close()
@@ -354,8 +359,29 @@ def fetch_image(target):
             return target["idx"], target["brand_name"], image
     except Exception:
         return None
+    
 
+def fetch_local_images(base_path):
+    data = []
+    for brand_folder in os.listdir(base_path):
+        brand_path = os.path.join(base_path, brand_folder)
+        if os.path.isdir(brand_path):
+            for image_file in os.listdir(brand_path):
+                if image_file.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    image_path = os.path.join(brand_path, image_file)
+                    try:
+                        image = Image.open(image_path).convert("RGB")  # RGB로 변환
+                        image_array = np.array(image)
+                        data.append({
+                            "idx": None, 
+                            "brand_name": brand_folder,
+                            "image_rgb": image_array,  
+                        })
+                    except Exception as e:
+                        print(f"Error loading image {image_path}: {e}")
+    return pd.DataFrame(data)
 
+"""
 # pd데이터로 변환환
 def url_image_data(targets):
     with ThreadPoolExecutor() as executor:
@@ -370,35 +396,89 @@ def url_image_data(targets):
         'BURBERRY': 'BURBERRY',
         'Burberry': 'BURBERRY',
         'CELINE': 'CELINE',
-        'Citizen': 'Citizen',
         'DIOR': 'DIOR',
-        'Fendi': 'Fendi',
         'GUCCI': 'GUCCI',
         'Gucci': 'GUCCI',
-        'Hamilton': 'Hamilton',
         'HERMES': 'HERMES',
-        'Longines': 'Longines',
         'Louis Vuitton': 'Louis Vuitton',
-        'MAISON246': 'MAISON246',
-        'Michael Kors': 'Michael Kors',
         'MONCLER': 'MONCLER',
-        'Rolex': 'Rolex',
-        'ROMANSON': 'ROMANSON',
         'THOM BROWNE': 'THOM BROWNE',
         'SALVATORE FERRAGAMO': 'SALVATORE FERRAGAMO',
         'PRADA': 'PRADA',
         'Chanel': 'Chanel',
-        '샤넬': 'Chanel'
+        '샤넬': 'Chanel',
+        # 'Citizen': 'Citizen',
+        # 'Rolex': 'Rolex',
+        # 'ROMANSON': 'ROMANSON',
+        # 'Fendi': 'Fendi',
+        # 'Longines': 'Longines',
+        # 'Hamilton': 'Hamilton',
+        # 'MAISON246': 'MAISON246',
+        # 'Michael Kors': 'Michael Kors',
     }
     img_all_data['brand_name'] = img_all_data['brand_name'].replace(brand_mapping)
     print(img_all_data['brand_name'].unique())
     brand_counts = img_all_data['brand_name'].value_counts()
     print("브랜드별 데이터 개수:\n", brand_counts)
-    categories = ['BALENCIAGA', 'BOTTEGA VENETA', 'BURBERRY', 'CELINE', 'Citizen', 'DIOR', 'Fendi', 'GUCCI', 
-                  'Hamilton', 'HERMES', 'Longines', 'Louis Vuitton', 'MAISON246', 'Michael Kors', 'MONCLER', 
-                  'Rolex', 'ROMANSON', 'THOM BROWNE', 'SALVATORE FERRAGAMO', 'PRADA', 'Chanel']
+    categories = ['BALENCIAGA', 'BOTTEGA VENETA', 'BURBERRY', 'CELINE', 'DIOR', 'GUCCI', 
+                  'HERMES', 'Louis Vuitton', 'MONCLER', 'THOM BROWNE', 'SALVATORE FERRAGAMO', 'PRADA', 'Chanel']
+    # , 'Citizen', 'Hamilton', 'Longines', 'MAISON246', 'Michael Kors', 'Rolex', 'ROMANSON', 'Fendi'
     img_all_data['brand_name'] = pd.Categorical(
         img_all_data['brand_name'], categories=categories, ordered=True
     ).codes
     print("\n==================================\n")
     return img_all_data
+"""
+
+def url_image_data_with_local(targets):
+    # URL에서 데이터를 가져옵니다
+    with ThreadPoolExecutor() as executor:
+        results = executor.map(fetch_image, targets)
+    url_data = [res for res in results if res]
+    url_df = pd.DataFrame(url_data, columns=["idx", "brand_name", "image_rgb"])
+    
+    # 로컬 데이터를 가져옵니다
+    local_image_path = r"C:\Users\user\Desktop\brand_image"
+    local_df = fetch_local_images(local_image_path)
+    
+    # URL 데이터와 로컬 데이터를 결합합니다
+    combined_df = pd.concat([url_df, local_df], ignore_index=True)
+    
+    # 브랜드 이름을 표준화합니다
+    brand_mapping = {
+        'BALENCIAGA': 'BALENCIAGA',
+        'Balenciaga': 'BALENCIAGA',
+        'BOTTEGA VENETA': 'BOTTEGA VENETA',
+        'BURBERRY': 'BURBERRY',
+        'Burberry': 'BURBERRY',
+        'CELINE': 'CELINE',
+        'DIOR': 'DIOR',
+        'GUCCI': 'GUCCI',
+        'Gucci': 'GUCCI',
+        'HERMES': 'HERMES',
+        'Louis Vuitton': 'Louis Vuitton',
+        'MONCLER': 'MONCLER',
+        'THOM BROWNE': 'THOM BROWNE',
+        'SALVATORE FERRAGAMO': 'SALVATORE FERRAGAMO',
+        'PRADA': 'PRADA',
+        'Chanel': 'Chanel',
+        '샤넬': 'Chanel',
+        'Louis_Vuitton': 'Louis Vuitton',
+        'SALVATORE_FERRAGAMO': 'SALVATORE FERRAGAMO',
+        'THOM_BROWN': 'THOM BROWNE'
+    }
+    combined_df['brand_name'] = combined_df['brand_name'].replace(brand_mapping)
+    #print(combined_df['brand_name'].unique())
+    brand_counts = combined_df['brand_name'].value_counts()
+    print("브랜드별 데이터 개수:\n", brand_counts)
+    
+    # 카테고리로 변환
+    categories = ['BALENCIAGA', 'BOTTEGA VENETA', 'BURBERRY', 'CELINE', 'DIOR', 'GUCCI', 
+                  'HERMES', 'Louis Vuitton', 'MONCLER', 'THOM BROWNE', 'SALVATORE FERRAGAMO', 'PRADA', 'Chanel']
+    combined_df['brand_name'] = pd.Categorical(
+        combined_df['brand_name'], categories=categories, ordered=True
+    ).codes
+    return combined_df
+
+print(mysql())
+
